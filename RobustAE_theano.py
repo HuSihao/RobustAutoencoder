@@ -94,3 +94,4 @@ if __name__=='__main__':
     rae = RobustAE(hidden_size=hidden_size[0]*hidden_size[1], visible_size=inputsize[0]*inputsize[1])
     rae.fit(data,iterations=2)
     rae.transform(data)
+    print rae
