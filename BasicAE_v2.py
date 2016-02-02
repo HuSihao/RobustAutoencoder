@@ -4,6 +4,7 @@ import BasicAE as AE
 
 class AutoEncoder_v2(AE.AutoEncoder):
     def getRecon(self, data):
+        samples=data.shape[0]
         z2 = np.dot(data, self.W) + np.tile(self.b1,(samples,1))
         h = self.sigmoid(z2)
         z3= np.dot(h , self.W.T)+np.tile(self.b2,(samples,1))
