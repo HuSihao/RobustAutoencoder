@@ -51,11 +51,9 @@ class RobustAE():
             if V[i] == -0:
                 V[i] = 0
         return V.reshape(X.shape)
-    def FNorm(self, X):
-        return nplin.norm(X,'fro')
-
+    
     def converged(self, X, L, S):
-        error = self.FNorm(X - L - S) / self.FNorm(X)
+        error = nplin.norm(X - L - S, 'fro') / nplin.norm(X,'fro')
         print "error = ", error
         return error <= self.error
     def transform(self, X):
