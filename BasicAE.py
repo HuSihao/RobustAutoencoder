@@ -46,18 +46,21 @@ class AutoEncoder():
         self.b1 = self.b1 - learning_rate * grad[1]
         self.b2 = self.b2 - learning_rate * grad[2]
         return one_step_cost
-    def fit(self,data, lambda_, learning_rate=0.1 ,iteration=25):
-        print "training..."
-        print
+    def fit(self,data, lambda_, learning_rate=0.1 ,iteration=25, verbose=False):
+        if verbose:
+            print "training..."
+            print
         training_cost = []
         start_time=timeit.default_timer()
         for i in range(iteration):
             one_step_cost = self.one_step_training(data, 0.1 , lambda_)
-            print "iteration: ", i , " cost: ", one_step_cost
+            if verbose:
+                print "iteration: ", i , " cost: ", one_step_cost
             training_cost.append(one_step_cost)
         end_time = timeit.default_timer()
-        print
-        print "total training time: ", ((end_time - start_time) / 60.), "m"
+        if verbose:
+            print
+            print "total training time: ", ((end_time - start_time) / 60.), "m"
 
     def transform(self,data):
         z2 = np.dot(data,self.W) + np.tile(self.b1,(data.shape[0],1))

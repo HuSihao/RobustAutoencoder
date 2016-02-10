@@ -3,7 +3,7 @@ import theano
 import theano.tensor as T
 #from theano.tensor.shared_randomstreams import RandomStreams
 import timeit
-
+import PIL.Image as Image
 class AutoEncoder(object):
     "basic auto-encoder"
     def __init__(self , visible_size , hidden_size , random_state = 0):
@@ -42,7 +42,7 @@ class AutoEncoder(object):
         updates = [(param , param - learning_rate*gparam) for param,gparam in zip(self.params , gparams)]
         return updates
 
-    def fit(self, X , iterations=15, batch_size = 20 ,learning_rate=0.15):
+    def fit(self, X , iterations=15, batch_size = 25 ,learning_rate=0.15):
         index = T.lscalar()
         x = T.matrix('x')
         n_train_batches = X.shape[0] / batch_size
@@ -77,9 +77,14 @@ class AutoEncoder(object):
         input=T.dmatrix(name='input')
         get_hidden_data=theano.function([input] , self.get_hidden_values(input))
         return get_hidden_data(X)
+    def getRecon(self, X):
+        input = T.dmatrix(name='input')
+        hidden = self.get_hidden_values(input)
+        getRecon = theano.function([input] , self.get_reconstructed(hidden))
+        return getRecon(X)
 
-if __name__=='__main__':
-    data=np.load(r'/home/zc/Documents/train_x.pkl')
+def test1():
+    data=np.load(r'/home/czhou2/Documents/train_x_small.pkl')
     #y=np.load(r'C:\Users\zc\Documents\MNIST data\Tutorial\train_y.pkl')
     print data.shape
     #print y.shape
@@ -87,5 +92,17 @@ if __name__=='__main__':
     hidden_size=(20,20)
 
     autoencoder = AutoEncoder(hidden_size=hidden_size[0]*hidden_size[1], visible_size=inputsize[0]*inputsize[1])
-    autoencoder.fit(data,iterations=2)
-    autoencoder.transform(data)
+    autoencoder.fit(data,iterations=20)
+    L = autoencoder.transform(data)
+    R = autoencoder.getRecon(data)
+
+    import matplotlib.pyplot as plt
+    import ImShow as I
+    image_aR = I.tile_raster_images(X=R,img_shape=(28,28), tile_shape=(20, 20),tile_spacing=(1, 1))
+    i = Image.fromarray(image_aR)
+    i.save(r"Recon.png")
+def test2():
+    pass
+if __name__=='__main__':
+    test1()
+    #test2()
